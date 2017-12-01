@@ -326,6 +326,13 @@ func TestFromAlias(t *testing.T) {
 			"tbl",
 			[]string{"table as tbl", "table"},
 		},
+		// q.from is empty
+		{
+			&Query{from: []string{}},
+			"table",
+			"tbl",
+			[]string{},
+		},
 	}
 	for _, test := range tests {
 		AppendFromAlias(test.q, test.from, test.alias)
@@ -359,6 +366,12 @@ func TestLastFromAlias(t *testing.T) {
 			&Query{from: []string{"table1", " table2 "}},
 			"tbl",
 			[]string{"table1", "table2 as tbl"},
+		},
+		// q.from is empty
+		{
+			&Query{from: []string{}},
+			"tbl",
+			[]string{},
 		},
 	}
 	for _, test := range tests {
