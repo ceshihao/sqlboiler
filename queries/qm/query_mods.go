@@ -123,6 +123,20 @@ func From(from string) QueryMod {
 	}
 }
 
+// FromAlias allows to specify the table alias for your statement
+func FromAlias(from, alias string) QueryMod {
+	return func(q *queries.Query) {
+		queries.AppendFromAlias(q, from, alias)
+	}
+}
+
+// LastFromAlias allows to specify the table alias for your statement
+func LastFromAlias(alias string) QueryMod {
+	return func(q *queries.Query) {
+		queries.AppendLastFromAlias(q, alias)
+	}
+}
+
 // Limit the number of returned rows
 func Limit(limit int) QueryMod {
 	return func(q *queries.Query) {

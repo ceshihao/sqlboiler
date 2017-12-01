@@ -290,6 +290,85 @@ func TestFrom(t *testing.T) {
 	}
 }
 
+func TestFromAlias(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		q      *Query
+		from   string
+		alias  string
+		expect []string
+	}{
+		{
+			&Query{from: []string{"table"}},
+			"table",
+			"tbl",
+			[]string{"table as tbl"},
+		},
+		// space in Query.from
+		{
+			&Query{from: []string{" table "}},
+			"table",
+			"tbl",
+			[]string{"table as tbl"},
+		},
+		// space in from
+		{
+			&Query{from: []string{"table"}},
+			" table ",
+			"tbl",
+			[]string{"table as tbl"},
+		},
+		// q.from has two tables with the same name
+		{
+			&Query{from: []string{"table", "table"}},
+			"table",
+			"tbl",
+			[]string{"table as tbl", "table"},
+		},
+	}
+	for _, test := range tests {
+		AppendFromAlias(test.q, test.from, test.alias)
+		if !reflect.DeepEqual(test.q.from, test.expect) {
+			t.Errorf("Expected %s, got %s", test.expect, test.q.from)
+		}
+	}
+}
+
+func TestLastFromAlias(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		q      *Query
+		alias  string
+		expect []string
+	}{
+		{
+			&Query{from: []string{"table1", "table2"}},
+			"tbl",
+			[]string{"table1", "table2 as tbl"},
+		},
+		// q.from has 2 tables with the same name
+		{
+			&Query{from: []string{"table1", "table1"}},
+			"tbl",
+			[]string{"table1", "table1 as tbl"},
+		},
+		// space in last element of q.from
+		{
+			&Query{from: []string{"table1", " table2 "}},
+			"tbl",
+			[]string{"table1", "table2 as tbl"},
+		},
+	}
+	for _, test := range tests {
+		AppendLastFromAlias(test.q, test.alias)
+		if !reflect.DeepEqual(test.q.from, test.expect) {
+			t.Errorf("Expected %s, got %s", test.expect, test.q.from)
+		}
+	}
+}
+
 func TestSetSelect(t *testing.T) {
 	t.Parallel()
 

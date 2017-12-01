@@ -3,6 +3,7 @@ package queries
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 
 	"github.com/volatiletech/sqlboiler/boil"
 )
@@ -231,6 +232,30 @@ func AppendSelect(q *Query, columns ...string) {
 // AppendFrom on the query.
 func AppendFrom(q *Query, from ...string) {
 	q.from = append(q.from, from...)
+}
+
+// AppendFromAlias on the query.
+// If q.from has multiple tables with the same name, this function only alias the first table
+func AppendFromAlias(q *Query, from, alias string) {
+	for i, fromClause := range q.from {
+		fromClause = strings.TrimSpace(fromClause)
+		if strings.ToLower(fromClause) == strings.ToLower(strings.TrimSpace(from)) {
+			q.from[i] = fromClause + " as " + alias
+			break
+		}
+	}
+}
+
+// AppendLastFromAlias on the query.
+func AppendLastFromAlias(q *Query, alias string) {
+	if len(q.from) != 0 {
+		last := len(q.from) - 1
+		fromClause := strings.TrimSpace(q.from[last])
+		toks := strings.Split(fromClause, " ")
+		if len(toks) == 1 {
+			q.from[last] = fromClause + " as " + alias
+		}
+	}
 }
 
 // SetFrom replaces the current from statements.
