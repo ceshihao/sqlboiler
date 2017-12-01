@@ -235,7 +235,7 @@ func AppendFrom(q *Query, from ...string) {
 }
 
 // AppendFromAlias on the query.
-// If q.from has multiple tables with the same name, this function only alias the first table
+// Limitation: If q.from has multiple tables with the same name, this function only alias the first table
 func AppendFromAlias(q *Query, from, alias string) {
 	for i, fromClause := range q.from {
 		fromClause = strings.TrimSpace(fromClause)
@@ -247,6 +247,7 @@ func AppendFromAlias(q *Query, from, alias string) {
 }
 
 // AppendLastFromAlias on the query.
+// This function can handle the limitaion case of AppendFromAlias
 func AppendLastFromAlias(q *Query, alias string) {
 	if len(q.from) != 0 {
 		last := len(q.from) - 1

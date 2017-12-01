@@ -123,14 +123,14 @@ func From(from string) QueryMod {
 	}
 }
 
-// FromAlias allows to specify the table alias for your statement
+// FromAlias allows to specify alias of the from table with specific name for your statement
 func FromAlias(from, alias string) QueryMod {
 	return func(q *queries.Query) {
 		queries.AppendFromAlias(q, from, alias)
 	}
 }
 
-// LastFromAlias allows to specify the table alias for your statement
+// LastFromAlias allows to specify alias of the last from table for your statement
 func LastFromAlias(alias string) QueryMod {
 	return func(q *queries.Query) {
 		queries.AppendLastFromAlias(q, alias)
